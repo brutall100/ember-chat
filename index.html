@@ -1,41 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dokumentas</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ember Chat – letters by candlelight</title>
+  <meta name="description" content="Ember Chat is a real-time chat where every message arrives like a sealed letter. Node.js, Socket.IO and MySQL, with a browser demo mode.">
+  <meta name="theme-color" content="#EEEEEE" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0F0E0E" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+
+  <script src="js/theme.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Merienda:wght@400;700&family=Overlock+SC&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+
+  <script src="js/runtime-config.js"></script>
+  <script src="js/app.js" defer></script>
 </head>
 
 <body>
-  <header>
-    <div class='header'>
-      <h3>HEADER</h3>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div class="backdrop" aria-hidden="true">
+    <div class="glow glow--one"></div>
+    <div class="glow glow--two"></div>
+    <div class="embers" id="embers"></div>
+  </div>
+
+  <header class="site-header">
+    <a class="brand" href="#main" aria-label="Ember Chat home">
+      <img src="images/favicon.svg" alt="" width="36" height="36">
+      <span>Ember Chat</span>
+    </a>
+
+    <div class="header-tools">
+      <span class="status-pill" id="status-pill" data-state="connecting">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span id="status-text">Lighting the candle…</span>
+      </span>
+
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false">
+        <svg class="icon icon--sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/></svg>
+        <svg class="icon icon--moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.6A8.5 8.5 0 1 1 9.4 3.5a7 7 0 0 0 11.1 11.1z"/></svg>
+      </button>
     </div>
   </header>
 
-  <main>
-    <section id="chat-container-section">
-      <div id="chat-container-messages">
-        <ul id="chat-messages"></ul>
+  <main id="main" tabindex="-1">
+    <section class="hero reveal" aria-labelledby="hero-title">
+      <p class="kicker">Letters by candlelight</p>
+      <h1 id="hero-title">Ember <span>Chat</span></h1>
+      <p class="lead">
+        A tiny real-time chat where every message is sealed with wax and delivered
+        to everyone in the room the moment you press&nbsp;send.
+      </p>
+
+      <dl class="stats">
+        <div class="stat">
+          <dt>Letters sent</dt>
+          <dd><span class="count" id="stat-letters" data-value="0">0</span></dd>
+        </div>
+        <div class="stat">
+          <dt>Around the candle</dt>
+          <dd><span class="count" id="stat-online" data-value="0">0</span></dd>
+        </div>
+        <div class="stat">
+          <dt>Words written</dt>
+          <dd><span class="count" id="stat-words" data-value="0">0</span></dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="chat reveal" id="chat" aria-labelledby="chat-title">
+      <div class="chat-head">
+        <h2 id="chat-title">The writing desk</h2>
+        <div class="field field--name">
+          <label for="author-input">Your name</label>
+          <input id="author-input" name="author" type="text" maxlength="40" autocomplete="nickname" required>
+        </div>
       </div>
-      <div>
-        <form id="chat-form">
-          <input id="chat-input-msg" name="user_message" autocomplete="off" />
-          <button id="chat-button" type="submit">Send</button>
-        </form>
+
+      <div class="paper" id="paper">
+        <ol class="letters" id="letters" aria-live="polite" aria-label="Messages"></ol>
+        <p class="typing" id="typing" hidden>
+          <span class="typing-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span id="typing-text">Alex Doe is writing…</span>
+        </p>
       </div>
+
+      <form class="composer" id="composer" novalidate>
+        <div class="field field--message">
+          <label for="message-input">Your letter</label>
+          <textarea id="message-input" name="message" rows="2" maxlength="500" required
+                    aria-describedby="char-count form-hint" placeholder="Write something warm…"></textarea>
+          <p class="field-meta">
+            <span id="form-hint">Enter sends · Shift + Enter adds a new line</span>
+            <span id="char-count">0 / 500</span>
+          </p>
+        </div>
+
+        <div class="composer-actions">
+          <button class="btn btn--ghost" id="clear-button" type="button" hidden>Burn the letters</button>
+          <button class="btn btn--primary" id="send-button" type="submit">
+            <svg class="icon envelope" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg>
+            <span>Seal &amp; send</span>
+          </button>
+        </div>
+        <p class="form-error" id="form-error" role="alert"></p>
+      </form>
+    </section>
+
+    <section class="steps" aria-labelledby="steps-title">
+      <h2 id="steps-title" class="reveal">How a letter travels</h2>
+      <ol class="step-list">
+        <li class="step reveal">
+          <span class="step-num" aria-hidden="true">I</span>
+          <h3>Write</h3>
+          <p>Pick a name and write your letter. The name is remembered in your browser for next time.</p>
+        </li>
+        <li class="step reveal">
+          <span class="step-num" aria-hidden="true">II</span>
+          <h3>Seal</h3>
+          <p>With the Node.js server, each letter is saved to MySQL using safe placeholder queries.</p>
+        </li>
+        <li class="step reveal">
+          <span class="step-num" aria-hidden="true">III</span>
+          <h3>Deliver</h3>
+          <p>Socket.IO hands it to everyone in the room instantly. On GitHub Pages a friendly demo writes back.</p>
+        </li>
+      </ol>
     </section>
   </main>
 
-  <footer>
-    <div class='footer'>
-      <h3>FOOTER</h3>
-    </div>
+  <footer class="site-footer">
+    <p>
+      Built by brutall100 · <a href="https://github.com/brutall100/ember-chat">Source code on GitHub</a> · MIT License
+    </p>
   </footer>
-  <script src='client.js'></script>
 </body>
-
 </html>

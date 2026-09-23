@@ -1,0 +1,10 @@
+# Dependencies
+node_modules/
+
+# Secrets – never commit real credentials
+.env
+
+# Logs & OS junk
+*.log
+.DS_Store
+Thumbs.db

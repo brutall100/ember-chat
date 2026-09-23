@@ -1,75 +1,135 @@
-# Chat App README
-Here's a README.md file that explains how your HTML, client.js, and server.js code work together.
+# Ember Chat
 
-This README provides an overview of a simple chat application that allows users to send and receive messages through a web interface. The application consists of HTML, client-side JavaScript (client.js), and server-side JavaScript (server.js).
+**A real-time chat where every message arrives like a letter sealed with wax.**
 
-## Table of Contents
+🇬🇧 English · [🇱🇹 Lietuviškai](README.lt.md)
 
-- [Features](#features)
-- [Getting Started](#getting-started)
-- [Installation](#nstallation)
-- [How It Works](#how-it-works)
-- [Authors](#authors)
+**[▶ Live demo](https://brutall100.github.io/ember-chat/)** · **[Source code](https://github.com/brutall100/ember-chat)**
+
+<img src="docs/screenshot.webp" alt="Ember Chat in light mode: a big 'Ember Chat' title, three counters and a lined writing desk with wax-seal avatars" width="1200" height="1754">
+
+<p>
+  <img src="docs/screenshot-dark.webp" alt="Ember Chat in dark mode" width="600" height="877" loading="lazy">
+  <img src="docs/screenshot-mobile.webp" alt="Ember Chat on a 390 px phone screen" width="150" height="881" loading="lazy">
+</p>
+
+---
+
+## About
+
+Ember Chat started as my first attempt to understand how a chat app works: a form, a
+Node.js server and a MySQL table. In version 2 I turned it into a small, real product:
+
+- With the **Node.js server**, letters travel between everyone in the room in real time
+  (Socket.IO) and are stored in **MySQL**.
+- On **GitHub Pages** there is no server, so the page switches to a **demo mode**:
+  letters are kept in your browser (localStorage) and a made-up pen pal, *Alex Doe*,
+  writes back.
+
+The page decides which mode to use by itself. You don't need to change any settings.
 
 ## Features
-- Users can input messages in an input field.
-- Sent messages are displayed in real-time on the web page.
-- Messages are sent to the server and inserted into a MySQL database.
 
-## Getting Started
-Before running the application, ensure you have the following installed:
+- 💬 **Real-time chat** with Socket.IO. Open two tabs and watch letters fly between them.
+- 🗄️ **Message history in MySQL**, saved with placeholder (`?`) queries so user text can't change the SQL.
+- 🧪 **Demo mode** for GitHub Pages: browser storage plus an auto-reply pen pal.
+- 🔏 **Wax-seal avatars** drawn in SVG from each author's initials. No photos.
+- 🕯️ **Living background** with drifting candle glows and rising embers. It animates only `transform` and `opacity`.
+- 🌗 **Light and dark themes**: follows your system setting, remembers your choice, and never flashes on load.
+- 🔢 **Counters that count up**: letters sent, people online, words written.
+- ✉️ **Micro-interactions**: buttons lift and press, a ripple effect, an envelope that flies off when you send, cards that rise on hover, sections that appear as you scroll.
+- ♿ **Accessible**: skip link, visible `:focus-visible`, labelled fields, `aria-live` messages, WCAG-checked contrast, and `prefers-reduced-motion` support.
+- 📱 **Responsive** down to 390 px with no sideways scrolling.
 
-- Node.js: [Download and install Node.js](https://nodejs.org/).
-- XAMPP: [Download and install XAMPP](https://www.apachefriends.org/index.html).
+## Built with
 
-Install all the necessary Node.js packages and dependencies for your Express.js application, including express, body-parser, mysql2, dotenv, and cors, you can use the following commands in your project directory:
+| Layer | Tech |
+|---|---|
+| Front end | HTML, CSS (custom properties), vanilla JavaScript |
+| Server | Node.js, Express, Socket.IO |
+| Database | MySQL / MariaDB (`mysql2`) |
+| Config | `dotenv` (environment variables) |
 
-## Installation
+### Palette
 
-npm install express body-parser mysql2 dotenv cors
+| Token | HEX | Used for |
+|---|---|---|
+| `--ink` | `#0F0E0E` | Dark background, light-mode text, text on teal buttons |
+| `--wine` | `#541212` | Wax seals, your own letters, light-mode headings |
+| `--teal` | `#468A9A` | Buttons, focus rings, glow |
+| `--mist` | `#EEEEEE` | Light background, dark-mode text |
+| `--accent-text` | `#2F6573` / `#7FBCCA` | Teal made readable as text (light / dark) |
 
+All contrast pairs were checked: body text is at least **5.6 : 1** and UI parts at least **3.38 : 1**.
 
-Create a .env file in the root directory and add your MySQL database configuration:
-Inside .env add this.
-# Database 
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=
-DB_DATABASE=chat
-# Port 
-PORT=3000
+### Fonts (Google Fonts)
 
+- **Merienda** – headings (feels hand-written, like a letter)
+- **Comic Neue** – body text and messages
+- **Overlock SC** – labels, buttons and small caps
 
-Start the server: node server.js
-The server will start listening on the specified port.
+## What I learned
 
+- How **WebSockets** (Socket.IO) push data to every client at once, and how that differs from a plain `fetch` POST.
+- Why SQL must use **placeholders** instead of string concatenation.
+- Keeping secrets in **environment variables** and out of git (`.env` + `.gitignore`).
+- Designing one app that runs in **two modes**: a real server and a static demo.
+- Building a whole theme from **CSS custom properties**, including a dark mode with no flash.
+- Checking **colour contrast** with real numbers, not by eye.
 
-# How It Works
-# HTML (index.html)
-Provides the structure for the web page, including a chat container and input form.
-Loads the client-side JavaScript (client.js) and styles (styles.css).
-# Client-Side JavaScript (client.js)
-Handles user interaction and communication with the server.
-Defines functions:
-addMessage(messageText): Adds a new message to the chat interface.
-sendMessageToServer(messageText): Sends a message to the server using a POST request.
-Listens for form submission events, captures user input, and sends the message to the server.
-Displays the sent message in real-time on the web page.
-# Server-Side JavaScript (server.js)
-Sets up an Express.js server to handle incoming HTTP requests.
-Configures middleware for parsing JSON requests and enabling CORS.
-Defines a POST route (/send-message) that receives messages from the client.
-Inserts received messages into a MySQL database using parameterized queries.
-Responds to the client with a success message or an error message.
-Dependencies
-Express.js: A web application framework for Node.js.
-mysql2: A MySQL library for Node.js.
-dotenv: Loads environment variables from a .env file.
-cors: Middleware for enabling Cross-Origin Resource Sharing (CORS).
+## Run it locally
 
+You need **Node.js 18+**. MySQL is optional.
 
-# Authors
-Aldas: Enjoy using your chat app! 
+```bash
+git clone https://github.com/brutall100/ember-chat.git
+cd ember-chat
+npm install
+cp .env.example .env      # then edit .env with your own values
+npm start                 # http://localhost:3000
+```
 
+**With MySQL:** create a database and a user (see `sql/schema.sql`) and fill in the
+`DB_*` values in `.env`. The server creates the `messages` table itself.
 
+**Without MySQL:** leave `DB_HOST` empty. The server keeps messages in memory until you restart it.
 
+**Demo mode only:** open `index.html` through any static server (for example
+`npx serve .`). Without the Node server, the page switches to demo mode.
+
+| Mode | How to start | Where messages are kept |
+|---|---|---|
+| Live + MySQL | `npm start` with `DB_*` set | MySQL table `messages` |
+| Live + memory | `npm start`, empty `DB_HOST` | Server memory |
+| Demo | GitHub Pages / any static server | Your browser (localStorage) |
+
+## Project structure
+
+```
+ember-chat/
+├── index.html            # page markup
+├── css/
+│   └── styles.css        # all styles; palette in :root
+├── js/
+│   ├── theme.js          # applies the saved theme before paint (no flash)
+│   ├── runtime-config.js # "demo" on Pages; the server answers "live"
+│   └── app.js            # chat logic, demo mode, animations
+├── images/
+│   └── favicon.svg       # wax-seal icon in the palette colours
+├── docs/                 # screenshots (WebP)
+├── sql/
+│   └── schema.sql        # MySQL table
+├── server.js             # Express + Socket.IO + MySQL
+├── .env.example          # sample environment variables
+└── package.json
+```
+
+## Credits
+
+- Real-time idea inspired by the official [Socket.IO chat tutorial](https://socket.io/get-started/chat).
+- Fonts: [Merienda](https://fonts.google.com/specimen/Merienda), [Comic Neue](https://fonts.google.com/specimen/Comic+Neue), [Overlock SC](https://fonts.google.com/specimen/Overlock+SC) via Google Fonts.
+- “Alex Doe” is a made-up demo character.
+
+## License
+
+[MIT](LICENSE) © 2023 brutall100
